@@ -1,11 +1,8 @@
 from typing import Union
 
 import requests
-from requests import Response
 
 from src.schemes.user import UserCompact
-
-BASE_URL = "https://osu.ppy.sh"
 
 
 class ApiWrapper(object):
@@ -17,6 +14,7 @@ class ApiWrapper(object):
         return cls._instance
 
     def __init__(self, client_id, client_secret):
+        self.base_url = "https://osu.ppy.sh"
         self.refresh_token = None
         self.__client_id: int = client_id
         self.__client_secret: str = client_secret
@@ -59,7 +57,6 @@ class ApiWrapper(object):
 
         return access_token
 
-
     def search_users(self, query: str) -> list[UserCompact]:
         users = []
         url = f"{self.base_url}/api/v2/search"
@@ -74,9 +71,8 @@ class ApiWrapper(object):
             "query": query,
             "page": 1
         }
-        response = requests.get(url=url, headers=headers, params=parameters)
+        response = self._send_request(method='get', url=url, headers=headers, params=parameters)
 
-        print(response.status_code)
         for user in response.json()["user"]["data"]:
             users.append(UserCompact(**user))
 

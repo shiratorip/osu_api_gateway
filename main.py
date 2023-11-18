@@ -14,6 +14,7 @@ def search():
     wrapper = ApiWrapper(client_id, client_secret)
     query = request.args.get('query')
 
+
     if not query:
         return {"error": "Query not provided"}
 
