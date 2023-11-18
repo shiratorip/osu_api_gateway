@@ -23,8 +23,9 @@ def search():
 
     users = wrapper.search_users(query)
 
-    result = list(user.model_dump_json() for user in users)
-    return json.dumps(result)
+    # result = users[0].model_dump_json()
+    #list(user.model_dump_json() for user in users)
+    return users
 
     # return {"result": {
     #     "avatar_url": user.avatar_url,
