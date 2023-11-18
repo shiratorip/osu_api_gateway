@@ -1,4 +1,3 @@
-import json
 import os
 
 from flask import Flask, request
@@ -23,12 +22,4 @@ def search():
 
     users = wrapper.search_users(query)
 
-    # result = users[0].model_dump_json()
-    #list(user.model_dump_json() for user in users)
-    return users
-
-    # return {"result": {
-    #     "avatar_url": user.avatar_url,
-    #     "id": user.id,
-    #     "username": user.username
-    # } for user in users}
+    return [user.model_dump() for user in users]

@@ -72,8 +72,8 @@ class ApiWrapper(object):
             "page": 1
         }
         response = self._send_request(method='get', url=url, headers=headers, params=parameters)
-        print(response.json())
-        return response.json()["user"]["data"]
-        #     users.append(UserCompact(**user))
-        #
-        # return users
+
+        for user in response.json()["user"]["data"]:
+            users.append(UserCompact(**user))
+
+        return users
