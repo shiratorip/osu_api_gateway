@@ -3,7 +3,7 @@ from typing import Union
 import requests
 from requests import Response
 
-from src.schemes.User import UserCompact
+from src.schemes.user import UserCompact
 
 BASE_URL = "https://osu.ppy.sh"
 
@@ -25,21 +25,18 @@ class ApiWrapper(object):
              "scope": "public"}
         )
 
-    def _check_token(func):
-        def wrapper(self, *args, **kwargs) -> Response:
-            print('Before')
-            result: Response = func(*args, **kwargs)
+    def _send_request(self, *args, **kwargs):
+        response = requests.request(*args, **kwargs, timeout=60)
 
-            if result.status_code == 401:
-                self.api_token = self.get_access_token(
-                    {"grant_type": "refresh_token",
-                     "refresh_token": self.refresh_token
-                     }
-                )
-                result: Response = func(*args, **kwargs)
-            return result
+        if response.status_code == 401:
+            self.api_token = self.get_access_token(
+                {"grant_type": "refresh_token",
+                 "refresh_token": self.refresh_token
+                 }
+            )
+            return self._send_request(*args, **kwargs)
 
-        return wrapper
+        return response
 
     def get_access_token(self, params) -> Union[str, None]:
         url = "https://osu.ppy.sh/oauth/token"
@@ -63,10 +60,9 @@ class ApiWrapper(object):
         return access_token
 
 
-    @_check_token
     def search_users(self, query: str) -> list[UserCompact]:
         users = []
-        url = f"{BASE_URL}/api/v2/search"
+        url = f"{self.base_url}/api/v2/search"
 
         headers = {
             "Accept": "application/json",
