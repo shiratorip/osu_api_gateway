@@ -22,8 +22,10 @@ def search():
 
     users = wrapper.search_users(query)
 
-    return {"result": {
-        "avatar_url": user.avatar_url,
-        "id": user.id,
-        "username": user.username
-    } for user in users}
+    return {"result": [user.model_dump_json()] for user in users}
+
+    # return {"result": {
+    #     "avatar_url": user.avatar_url,
+    #     "id": user.id,
+    #     "username": user.username
+    # } for user in users}
