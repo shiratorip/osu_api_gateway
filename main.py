@@ -5,13 +5,17 @@ from dotenv import load_dotenv
 
 from src.api_wraper import ApiWrapper
 
+load_dotenv()
+CLIENT_ID = os.getenv("CLIENT_ID")
+CLIENT_SECRET = os.getenv("CLIENT_SECRET")
+
 
 app = Flask(__name__)
 
 
 @app.route('/get-users')
 def search():
-    wrapper = ApiWrapper(client_id, client_secret)
+    wrapper = ApiWrapper(CLIENT_ID, CLIENT_SECRET)
     query = request.args.get('query')
 
 
@@ -21,11 +25,3 @@ def search():
     users = wrapper.search_users(query)
 
     return {"result": {user.id: user.username for user in users}}
-
-
-if __name__ == '__main__':
-    load_dotenv()
-    client_id = os.getenv("CLIENT_ID")
-    client_secret = os.getenv("CLIENT_SECRET")
-
-    app.run()
