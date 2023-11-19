@@ -1,3 +1,6 @@
 # osu_api_gateway
-osu api v2 Gateway on Flask with user search function as an example
-(hosted version)http://shiratorip.eu.pythonanywhere.com/get-users?query=chocomint
+osu api v2 Gateway on Flask with user and wiki search function as an example
+(hosted version) 
+user example: shiratorip.eu.pythonanywhere.com/search?q=Gurbzy&mode=user&page=1
+wiki page example: shiratorip.eu.pythonanywhere.com/search?q=Gurbzy&mode=wiki&page=1
+you can change queries and chack response for yourself
