@@ -1,8 +1,9 @@
-from typing import Union
+from typing import Union, TypeVar, Type
 
 import requests
 
-from src.schemes.user import UserCompact
+from src.schemes.user import User
+from src.schemes.wiki import Wiki
 
 
 class ApiWrapper(object):
@@ -57,23 +58,27 @@ class ApiWrapper(object):
 
         return access_token
 
-    def search_users(self, query: str) -> list[UserCompact]:
-        users = []
+    def search(self, query: str, page: int = 1, mode: str = 'all') -> list[Union[User, Wiki]]:
         url = f"{self.base_url}/api/v2/search"
-
+        items = []
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
             "Authorization": f"Bearer {self.api_token}"
         }
         parameters = {
-            "mode": "user",
+            "mode": mode,
             "query": query,
-            "page": 1
+            "page": page
         }
         response = self._send_request(method='get', url=url, headers=headers, params=parameters)
 
-        for user in response.json()["user"]["data"]:
-            users.append(UserCompact(**user))
+        for item in response.json()[mode]["data"]:
+            if mode == "user":
+                items.append(User(**item))
+            elif mode == "wiki_page":
+                items.append(Wiki(**item))
+            else:
+                pass
 
-        return users
+        return items

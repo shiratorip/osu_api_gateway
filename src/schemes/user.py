@@ -4,7 +4,7 @@ from typing import Optional
 from pydantic import BaseModel
 
 
-class UserCompact(BaseModel):
+class User(BaseModel):
     avatar_url: str
     country_code: str
     default_group: str
@@ -18,3 +18,7 @@ class UserCompact(BaseModel):
     profile_colour: Optional[str]
     id: int
     username: str
+
+# to do
+# class UserExtended(BaseModel):
+#     cover_url: str
