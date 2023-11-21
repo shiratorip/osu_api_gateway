@@ -58,7 +58,23 @@ class ApiWrapper(object):
 
         return access_token
 
-    def search(self, query: str, page: int = 1, mode: str = 'all') -> list[Union[User, Wiki]]:
+    def search_users(self, query: str, page: int = 1) -> list[User]:
+        result = self._search(query, page, mode='user')
+        return [User(**item for item in result.json()[mode]["data"]]
+
+    def search_wiki(self, query: str, page: int = 1) -> list[Wiki]:
+        result = self._search(query, page, mode='wiki_page')
+        return [Wiki(**item for item in result.json()[mode]["data"]]
+
+    def search_all(self, query: str, page: int = 1) -> tuple[list[User], list[Wiki]]:
+        result = self._search(query, page, mode='all')
+        users = [User(**item for item in result.json()['users']["data"]]
+        wiki = [Wiki(**item for item in result.json()['wiki']["data"]]
+
+        return users, wiki
+        
+
+    def _search(self, query: str, page: int = 1, mode: str = 'all') -> requests.Response:
         url = f"{self.base_url}/api/v2/search"
         items = []
         headers = {
@@ -73,12 +89,4 @@ class ApiWrapper(object):
         }
         response = self._send_request(method='get', url=url, headers=headers, params=parameters)
 
-        for item in response.json()[mode]["data"]:
-            if mode == "user":
-                items.append(User(**item))
-            elif mode == "wiki_page":
-                items.append(Wiki(**item))
-            else:
-                pass
-
-        return items
+        return response
