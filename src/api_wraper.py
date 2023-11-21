@@ -60,16 +60,16 @@ class ApiWrapper(object):
 
     def search_users(self, query: str, page: int = 1) -> list[User]:
         result = self._search(query, page, mode='user')
-        return [User(**item for item in result.json()[mode]["data"]]
+        return [User(**item for item in result.json()['user']["data"]]
 
     def search_wiki(self, query: str, page: int = 1) -> list[Wiki]:
         result = self._search(query, page, mode='wiki_page')
-        return [Wiki(**item for item in result.json()[mode]["data"]]
+        return [Wiki(**item for item in result.json()['wiki_page']["data"]]
 
     def search_all(self, query: str, page: int = 1) -> tuple[list[User], list[Wiki]]:
         result = self._search(query, page, mode='all')
-        users = [User(**item for item in result.json()['users']["data"]]
-        wiki = [Wiki(**item for item in result.json()['wiki']["data"]]
+        users = [User(**item for item in result.json()['user']["data"]]
+        wiki = [Wiki(**item for item in result.json()['wiki_page']["data"]]
 
         return users, wiki
         
