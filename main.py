@@ -17,22 +17,35 @@ app = Flask(__name__)
 def search():
     wrapper = ApiWrapper(CLIENT_ID, CLIENT_SECRET)
     query = request.args.get('q')
-    mode = request.args.get('mode')
-    page = request.args.get('page')
-    print(query, " ", mode, " ", page)
+    mode = request.args.get('mode') or 'all'
+    page_from_request = request.args.get('page') or '1'
+
     if not query:
         return {"error": "Query not provided"}
-    if not page:
-        page = 1
-    if not mode:
-        mode = 'all'
+
+    if page.isdigit():
+        page = int(page_from_request)
+    else:
+        return {"error": "Invalid page"}
+    
+    print(query, " ", mode, " ", page)
 
     # items = wrapper.search_wiki(query)
     if mode == 'user':
-        items = wrapper.search(query=query, page=int(page), mode='user')
+        items = wrapper.search_user(query=query, page=page)
+        return {
+            'user': [user.model_dump() for user in users]    
+        }
+        
     elif mode == 'wiki':
-        items = wrapper.search(query=query, page=int(page), mode='wiki_page')
+        items = wrapper.search_wiki(query=query, page=page)
+        return return {
+        'wiki': [wiki.model_dump() for wiki in wiki]
+        }
+        
     else:
-        items = wrapper.search(query=query, page=int(page), mode='all')
-
-    return [item.model_dump() for item in items]
+        users, wiki = wrapper.search_all(query=query, page=page)
+        return {
+        'user': [user.model_dump() for user in users],
+        'wiki': [wiki.model_dump() for wiki in wiki]
+        }
