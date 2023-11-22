@@ -33,19 +33,13 @@ def search():
     # items = wrapper.search_wiki(query)
     if mode == 'user':
         items = wrapper.search_users(query=query, page=page)
-        return {
-            'user': [user.model_dump() for user in items]
-        }
+        return [user.model_dump() for user in items]
 
     elif mode == 'wiki':
         items = wrapper.search_wiki(query=query, page=page)
-        return {
-            'wiki': [wiki.model_dump() for wiki in items]
-        }
+        return [wiki.model_dump() for wiki in items]
 
     else:
         users, wiki = wrapper.search_all(query=query, page=page)
-        return {
-            'user': [user.model_dump() for user in users],
-            'wiki': [wiki.model_dump() for wiki in wiki]
-        }
+        return [[user.model_dump() for user in users],
+                [wiki.model_dump() for wiki in wiki]]
