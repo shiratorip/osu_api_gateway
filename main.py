@@ -12,7 +12,7 @@ CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 app = Flask(__name__)
 
 
-# test curl "http://127.0.0.1:5000/search?q=chocomint&mode=wiki&page=1"
+# test curl "http://127.0.0.1:5000/search?q=chocomint&mode=all&page=1"
 @app.route('/search')
 def search():
     wrapper = ApiWrapper(CLIENT_ID, CLIENT_SECRET)
@@ -23,29 +23,29 @@ def search():
     if not query:
         return {"error": "Query not provided"}
 
-    if page.isdigit():
+    if page_from_request.isdigit():
         page = int(page_from_request)
     else:
         return {"error": "Invalid page"}
-    
+
     print(query, " ", mode, " ", page)
 
     # items = wrapper.search_wiki(query)
     if mode == 'user':
-        items = wrapper.search_user(query=query, page=page)
+        items = wrapper.search_users(query=query, page=page)
         return {
-            'user': [user.model_dump() for user in users]    
+            'user': [user.model_dump() for user in items]
         }
-        
+
     elif mode == 'wiki':
         items = wrapper.search_wiki(query=query, page=page)
-        return return {
-        'wiki': [wiki.model_dump() for wiki in wiki]
+        return {
+            'wiki': [wiki.model_dump() for wiki in items]
         }
-        
+
     else:
         users, wiki = wrapper.search_all(query=query, page=page)
         return {
-        'user': [user.model_dump() for user in users],
-        'wiki': [wiki.model_dump() for wiki in wiki]
+            'user': [user.model_dump() for user in users],
+            'wiki': [wiki.model_dump() for wiki in wiki]
         }
