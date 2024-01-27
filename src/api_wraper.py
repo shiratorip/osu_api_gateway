@@ -72,7 +72,10 @@ class ApiWrapper(object):
         wiki = [Wiki(**item) for item in result.json()['wiki_page']["data"]]
 
         return users, wiki
-        
+
+    def get_scores(self, user: int):
+        result = self._get_top_scores(user=user)
+        return result.json()
 
     def _search(self, query: str, page: int = 1, mode: str = 'all') -> requests.Response:
         url = f"{self.base_url}/api/v2/search"
@@ -90,3 +93,23 @@ class ApiWrapper(object):
         response = self._send_request(method='get', url=url, headers=headers, params=parameters)
 
         return response
+
+    def _get_top_scores(self, user: int) -> requests.Response:
+        url = f"{self.base_url}/api/v2/users/{user}/scores/best"
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {self.api_token}"
+        }
+        parameters = {
+            "mode": "osu",
+            "limit": 100,
+        }
+        response = self._send_request(method='get', url=url, headers=headers, params=parameters)
+
+        return response
+
+    # def _return_suitable_scores(self, scores:requests.Response) -> requests.Response:
+    #     json_scores = scores.json()
+    #     for i in json_scores:
+
