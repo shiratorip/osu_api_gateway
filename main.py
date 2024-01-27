@@ -18,7 +18,7 @@ app = Flask(__name__)
 def get_scores():
     wrapper = ApiWrapper(CLIENT_ID, CLIENT_SECRET)
     user = request.args.get("user")
-    return wrapper.get_scores()
+    return wrapper.get_scores(user=int(user))
 
 @app.route('/search')
 def search():
