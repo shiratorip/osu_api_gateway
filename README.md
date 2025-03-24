@@ -1,4 +1,6 @@
 # osu_api_gateway
+please don't abuse hosted version, it's for demonstration purposes only
+
 osu api v2 Gateway on Flask with user and wiki search function as an example
 (hosted version) 
 
